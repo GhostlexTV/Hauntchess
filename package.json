@@ -1,0 +1,30 @@
+{
+ "name": "chess",
+ "private": true,
+ "engines": {
+  "node": ">=22"
+ },
+ "scripts": {
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start",
+  "predev": "node scripts/setup.mjs",
+  "prebuild": "node scripts/setup.mjs"
+ },
+ "dependencies": {
+  "@auth/pg-adapter": "^1.7.0",
+  "@neondatabase/serverless": "^1.0.0",
+  "chess.js": "^1.0.0",
+  "next": "^15.1.0",
+  "next-auth": "beta",
+  "pusher": "^5.2.0",
+  "pusher-js": "^8.4.0",
+  "react": "^19.0.0",
+  "react-dom": "^19.0.0"
+ },
+ "devDependencies": {
+  "@types/node": "^22.0.0",
+  "@types/react": "^19.0.0",
+  "typescript": "^5.6.0"
+ }
+}
