@@ -12,11 +12,9 @@
   "prebuild": "node scripts/setup.mjs"
  },
  "dependencies": {
-  "@auth/pg-adapter": "^1.7.0",
   "@neondatabase/serverless": "^1.0.0",
   "chess.js": "^1.0.0",
   "next": "^15.1.0",
-  "next-auth": "beta",
   "pusher": "^5.2.0",
   "pusher-js": "^8.4.0",
   "react": "^19.0.0",

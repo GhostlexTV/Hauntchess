@@ -1,20 +1,10 @@
-import NextAuth from "next-auth";
-import Google from "next-auth/providers/google";
-import GitHub from "next-auth/providers/github";
-import Resend from "next-auth/providers/resend";
-import PostgresAdapter from "@auth/pg-adapter";
-import {Pool} from "@neondatabase/serverless";
-
-// Only providers whose keys are set in the environment show up on the sign-in page.
-const providers = [
-  process.env.AUTH_GOOGLE_ID && Google,
-  process.env.AUTH_GITHUB_ID && GitHub,
-  process.env.AUTH_RESEND_KEY && Resend({from: process.env.EMAIL_FROM}),
-].filter(Boolean) as any[];
-
-export const {handlers,auth} = NextAuth(() => ({
-  adapter: PostgresAdapter(new Pool({connectionString: process.env.DATABASE_URL}) as any),
-  providers,
-  callbacks: {session({session,user}) {(session.user as any).id = user.id; return session;}},
-}));
-export const uid = async () => Number(((await auth())?.user as any)?.id) || 0;
+import {cookies} from "next/headers";
+import {createHmac} from "crypto";
+// Signed session cookie. Uses AUTH_SECRET if set, otherwise falls back to DATABASE_URL so a missing secret can't break login.
+const key = () => process.env.AUTH_SECRET || process.env.DATABASE_URL || "dev";
+const sig = (v: string) => createHmac("sha256", key()).update(v).digest("base64url");
+export const sessionCookie = (id: number) => `${id}.${sig(String(id))}`;
+export const uid = async () => {
+  const [id, s] = ((await cookies()).get("s")?.value || "").split(".");
+  return s && s === sig(id) ? Number(id) || 0 : 0;
+};
